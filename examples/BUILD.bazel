@@ -1,0 +1,9 @@
+load("@rules_typst//:typst.bzl", "typst")
+
+typst(
+    name = "example",
+    src = "example.typ",
+    data = [
+        "smile.svg",
+    ]
+)
