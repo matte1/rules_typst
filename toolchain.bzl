@@ -12,7 +12,7 @@ sh_binary(
 """
     url = "https://github.com/typst/typst/releases/download/v0.11.1/typst-aarch64-apple-darwin.tar.xz"
     http_archive(
-        name = "typst",
+        name = "typst-aarch64-apple-darwin",
         build_file_content = TOOLCHAIN_BUILD_FILE,
         url = url,
         integrity = "sha256-gK9wJQzUhkTfNshM7Y8+ZsEJA+5Az5j+QjaLQrzci7o=",
@@ -34,7 +34,7 @@ sh_binary(
         name = "typst-x86_64-unknown-linux-musl",
         build_file_content = TOOLCHAIN_BUILD_FILE,
         url = url,
-        integrity = "sha256-gK9wJQzUhkTfNshM7Y8+ZsEJA+5Az5j+QjaLQrzci7o=",
+        integrity = "sha256-u2N9HWVjSy7ktOEB0LLVQb8/HgOsX1H5YZlB5I3Si9A=",
         strip_prefix = "typst-x86_64-unknown-linux-musl",
     )
 

@@ -7,5 +7,5 @@ typst_x86_64_unknown_linux_musl_deps()
 
 register_toolchains(
     "@rules_typst//:typst_macos_toolchain",
-    "@rules_typst//:typst_x86_64_unknown_linux_musl_toolchain"
+    "@rules_typst//:typst_linux_toolchain"
 )

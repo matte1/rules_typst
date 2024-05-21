@@ -2,7 +2,7 @@ load(":toolchain.bzl", "typst_toolchain")
 
 typst_toolchain(
     name = "typst_macos",
-    compiler = "@typst//:typst_aarch64_darwin_bin",
+    compiler = "@typst-aarch64-apple-darwin//:typst_aarch64_darwin_bin",
 )
 
 toolchain(
@@ -16,12 +16,12 @@ toolchain(
 )
 
 typst_toolchain(
-    name = "typst_x86_64_unknown_linux_musl",
-    compiler = "@typst//:typst_x86_64_unknown_linux_musl",
+    name = "typst_linux",
+    compiler = "@typst-x86_64-unknown-linux-musl//:typst_x86_64_unknown_linux_musl_bin",
 )
 
 toolchain(
-    name = "typst_x86_64_unknown_linux_musl_toolchain",
+    name = "typst_linux_toolchain",
     exec_compatible_with = [
         "@platforms//os:linux",
         "@platforms//cpu:x86_64",
