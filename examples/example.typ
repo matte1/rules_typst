@@ -6,7 +6,14 @@ $ cal(A) :=
 $ #x < 17 $
 
 #figure(
-  image("smile.svg", width: 80%),
+  image("examples/smile.svg", width: 80%),
+  caption: [
+    Smile you have an image!
+  ],
+)
+
+#figure(
+  image("examples/frown.svg", width: 80%),
   caption: [
     Smile you have an image!
   ],

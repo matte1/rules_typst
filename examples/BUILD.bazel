@@ -1,9 +1,23 @@
 load("@rules_typst//:typst.bzl", "typst")
 
+filegroup(
+    name = "smile",
+    srcs = ["smile.svg"],
+)
+
+
+genrule(
+    name = "frown",
+    srcs = [":smile"],
+    outs = ["frown.svg"],
+    cmd = "cp $(location smile) $@",
+)
+
 typst(
     name = "example",
     src = "example.typ",
     data = [
-        "smile.svg",
+        ":smile",
+        ":frown",
     ]
 )
