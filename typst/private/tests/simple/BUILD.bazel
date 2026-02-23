@@ -20,6 +20,7 @@ typst(
         ":frown",
         ":smile",
     ],
+    visibility = ["//typst/private/tests:__pkg__"],
 )
 
 build_test(

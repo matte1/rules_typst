@@ -1,15 +1,38 @@
+load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load("@bazel_skylib//rules:run_binary.bzl", "run_binary")
+load("@bazel_lib//lib:write_source_files.bzl", "write_source_file")
+load("@rules_python//python:defs.bzl", "py_binary")
 load("@rules_typst//typst:typst.bzl", "typst")
 
 filegroup(
-    name = "smile",
-    srcs = ["smile.svg"],
+    name = "smile_source",
+    srcs = ["assets/source/smile.svg"],
 )
 
 copy_file(
     name = "frown",
-    src = ":smile",
-    out = "frown.svg",
+    src = ":smile_source",
+    out = "assets/derived/frown.svg",
+)
+
+py_binary(
+    name = "generate_svgs",
+    srcs = ["tools/generate_svgs.py"],
+    main = "tools/generate_svgs.py",
+)
+
+run_binary(
+    name = "generated_svg_set",
+    tool = ":generate_svgs",
+    outs = [
+        "generated/python/diamond.svg",
+        "generated/python/stripes.svg",
+    ],
+    args = [
+        "$(location generated/python/diamond.svg)",
+        "$(location generated/python/stripes.svg)",
+    ],
 )
 
 typst(
@@ -17,6 +40,19 @@ typst(
     src = "example.typ",
     data = [
         ":frown",
-        ":smile",
+        ":generated_svg_set",
+        ":smile_source",
     ],
+)
+
+write_source_file(
+    name = "write_example_pdf",
+    in_file = ":example",
+    out_file = "generated/source_sync/example.pdf",
+    diff_test = True,
+)
+
+build_test(
+    name = "example_build_test",
+    targets = [":example"],
 )
