@@ -88,9 +88,21 @@ fn main() {
         fs::copy(src, &abs_dest).expect("Failed to copy file into build directory");
     }
 
+    // Set --root to the workspace root so paths resolve relative to the
+    // workspace rather than the .typ file's parent directory.
+    let workspace_root = temp_runfiles_dir.join(
+        args.src
+            .1
+            .iter()
+            .next()
+            .expect("src rlocationpath must have a workspace name component"),
+    );
+
     // Run the typst compiler
     let result = Command::new(&args.compiler)
         .arg("compile")
+        .arg("--root")
+        .arg(&workspace_root)
         .arg(&abs_src)
         .arg(&args.out)
         .output();
