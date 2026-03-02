@@ -1,5 +1,6 @@
 load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
 load("//typst:typst.bzl", "typst")
 
 filegroup(
@@ -28,4 +29,30 @@ build_test(
     targets = [
         ":simple",
     ],
+)
+
+# Determinism test: two separate targets from the same source must produce
+# byte-identical PDFs (SOURCE_DATE_EPOCH=0 is set by default).
+typst(
+    name = "deterministic_a",
+    src = "simple.typ",
+    data = [
+        ":frown",
+        ":smile",
+    ],
+)
+
+typst(
+    name = "deterministic_b",
+    src = "simple.typ",
+    data = [
+        ":frown",
+        ":smile",
+    ],
+)
+
+diff_test(
+    name = "deterministic_test",
+    file1 = ":deterministic_a",
+    file2 = ":deterministic_b",
 )
