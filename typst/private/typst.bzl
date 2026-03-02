@@ -33,6 +33,9 @@ def _typst_impl(ctx):
             _rlocationpath(src, ctx.workspace_name),
         ))
 
+    env = {"SOURCE_DATE_EPOCH": "0"}
+    env.update(ctx.attr.env)
+
     ctx.actions.run(
         mnemonic = "TypstC",
         executable = toolchain_info.process_wrapper,
@@ -40,6 +43,7 @@ def _typst_impl(ctx):
         outputs = [pdf_outfile],
         tools = toolchain_info.all_files,
         inputs = depset([ctx.file.src] + ctx.files.data),
+        env = env,
     )
 
     return [
@@ -48,16 +52,21 @@ def _typst_impl(ctx):
     ]
 
 typst = rule(
-    doc = "TODO",
+    doc = "Compile a Typst document to PDF.",
     implementation = _typst_impl,
     attrs = {
         "data": attr.label_list(
-            doc = "TODO",
+            doc = "Additional data dependencies (images, templates, etc.).",
             allow_files = True,
             mandatory = False,
         ),
+        "env": attr.string_dict(
+            doc = "Additional environment variables for the typst compiler action. " +
+                  "SOURCE_DATE_EPOCH=0 is set by default for deterministic output. " +
+                  "Override with a different value to opt out.",
+        ),
         "src": attr.label(
-            doc = "TODO",
+            doc = "The .typ source file to compile.",
             allow_single_file = [".typ"],
             mandatory = True,
         ),
