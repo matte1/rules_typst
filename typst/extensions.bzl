@@ -2,6 +2,7 @@
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("//typst/private:versions.bzl", "TYPST_VERSIONS")
 
 _HUB_BUILD_CONTENT = """\
 {toolchains}
@@ -42,60 +43,26 @@ _CONSTRAINTS = {
     ],
 }
 
-_VERSIONS = {
-    "0.14.2": {
-        "aarch64-apple-darwin": {
-            "integrity": "sha256-RwqkmiKY0gtlwRmhDk/4gIVQRT4MtNhWJbicrwzt8Eg=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-aarch64-apple-darwin.tar.xz"],
-        },
-        "aarch64-pc-windows-msvc": {
-            "integrity": "sha256-HEqqDeAAqxeH3aNUw09Pof48JSXT0DjmkqPX2qMz1VE=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-aarch64-pc-windows-msvc.zip"],
-        },
-        "aarch64-unknown-linux-musl": {
-            "integrity": "sha256-SRsQGqQKOn6oKj+KYjLKu05qfiM4EAguWsgS1D/c1Ho=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-aarch64-unknown-linux-musl.tar.xz"],
-        },
-        "armv7-unknown-linux-musleabi": {
-            "integrity": "sha256-Vb++revAHCEW8f6mBtzXL+MOHYsC++YdXtd9aMbs4pg=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-armv7-unknown-linux-musleabi.tar.xz"],
-        },
-        "riscv64gc-unknown-linux-gnu": {
-            "integrity": "sha256-zd06/BS94OWWa/DlZaL4jItpu7mpEedHPU+ilJ5dvBU=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-riscv64gc-unknown-linux-gnu.tar.xz"],
-        },
-        "x86_64-apple-darwin": {
-            "integrity": "sha256-TpHY4eM6sWT5ScV2LgHuP6pYXIYVoqa9XjZ3+oUGskk=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-x86_64-apple-darwin.tar.xz"],
-        },
-        "x86_64-pc-windows-msvc": {
-            "integrity": "sha256-UTU5lKyDIYw0lwUuibLEMsU7nUQ5zcGzYeLqR5jr/BM=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-x86_64-pc-windows-msvc.zip"],
-        },
-        "x86_64-unknown-linux-musl": {
-            "integrity": "sha256-pgRMutKpVN65IRZ+JX4SCsChayAznsARIRlP+dOUmW0=",
-            "urls": ["https://github.com/typst/typst/releases/download/v0.14.2/typst-x86_64-unknown-linux-musl.tar.xz"],
-        },
-    },
-}
-
 _TOOLCHAIN_ENTRY = """\
 toolchain(
-    name = "typst_toolchain_{arch}",
+    name = "typst_toolchain_{version}_{arch}",
     toolchain_type = "@rules_typst//typst:toolchain_type",
     toolchain = "{toolchain}",
     exec_compatible_with = {constraints},
+    target_settings = ["@rules_typst//typst/settings:version_{version}"],
     visibility = ["//visibility:public"],
 )
 """
 
 def _typst_toolchains_hub_impl(repository_ctx):
     toolchains = []
-    for toolchain, arch in repository_ctx.attr.toolchains.items():
+    for toolchain, version_arch in repository_ctx.attr.toolchains.items():
+        version, _, arch = version_arch.partition(":")
         toolchains.append(_TOOLCHAIN_ENTRY.format(
             arch = arch,
             constraints = repr(_CONSTRAINTS[arch]),
             toolchain = str(toolchain),
+            version = version,
         ))
 
     repository_ctx.file("BUILD.bazel", _HUB_BUILD_CONTENT.format(
@@ -154,33 +121,32 @@ typst_toolchain(
 """
 
 def _typst_impl(module_ctx):
-    version = "0.14.2"
-
     toolchains = {}
 
-    for platform, data in _VERSIONS[version].items():
-        name = "typst_{}".format(platform)
+    for version, platforms in TYPST_VERSIONS.items():
+        for platform, data in platforms.items():
+            name = "typst_{}_{}".format(version, platform)
 
-        build_file_content = _TYPST_UNIX_BUILD_CONTENT.format(
-            name = name,
-        )
-
-        # Special case, as it is a zip archive with no prefix to strip.
-        if "windows" in platform:
-            build_file_content = _TYPST_WINDOWS_BUILD_CONTENT.format(
+            build_file_content = _TYPST_UNIX_BUILD_CONTENT.format(
                 name = name,
             )
 
-        maybe(
-            http_archive,
-            name = name,
-            strip_prefix = "typst-{}".format(platform),
-            build_file_content = build_file_content,
-            integrity = data["integrity"],
-            urls = data["urls"],
-        )
+            # Special case, as it is a zip archive with no prefix to strip.
+            if "windows" in platform:
+                build_file_content = _TYPST_WINDOWS_BUILD_CONTENT.format(
+                    name = name,
+                )
 
-        toolchains["@{}//:toolchain".format(name)] = platform
+            maybe(
+                http_archive,
+                name = name,
+                strip_prefix = "typst-{}".format(platform),
+                build_file_content = build_file_content,
+                integrity = data["integrity"],
+                urls = data["urls"],
+            )
+
+            toolchains["@{}//:toolchain".format(name)] = "{}:{}".format(version, platform)
 
     maybe(
         typst_toolchains_hub,
