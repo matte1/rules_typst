@@ -18,3 +18,5 @@ use_repo(
 register_toolchains(
     "@typst_toolchains//:all",
 )
+
+bazel_dep(name = "rules_venv", version = "0.10.0", dev_dependency = True)

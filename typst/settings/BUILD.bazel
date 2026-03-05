@@ -1,0 +1,21 @@
+load(
+    "@bazel_skylib//rules:common_settings.bzl",
+    "string_flag",
+)
+load("//typst/private:versions.bzl", "TYPST_VERSIONS")
+
+string_flag(
+    name = "version",
+    build_setting_default = "0.14.2",
+    values = TYPST_VERSIONS.keys(),
+    visibility = ["//visibility:public"],
+)
+
+[
+    config_setting(
+        name = "version_{}".format(version),
+        flag_values = {":version": version},
+        visibility = ["//visibility:public"],
+    )
+    for version in TYPST_VERSIONS.keys()
+]
