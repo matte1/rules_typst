@@ -26,17 +26,14 @@ typst_packages.package(
 )
 typst_packages.package(
     name = "cetz",
-    integrity = "sha256-d8+EkBFK4ExuZloR76aR0oSgytuXGXcbVwjBGXKS8j8=",
     version = "0.5.2",
 )
 typst_packages.package(
     name = "oxifmt",
-    integrity = "sha256-fReh/IrQF0DsPLKwPHNgpCJf+TGOVxB2X6mOpv1ZWU8=",
     version = "1.0.0",
 )
 typst_packages.package(
     name = "zap",
-    integrity = "sha256-Lq30CKTE7wdk45okSF5LhNkXuZTbf6UbEI71nwWsApk=",
     version = "0.6.0",
 )
 use_repo(typst_packages, "typst_packages")

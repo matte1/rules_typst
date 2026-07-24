@@ -4,7 +4,8 @@ Bazel rules for [Typst](https://typst.app/).
 
 ## Typst packages
 
-Declare packages in `MODULE.bazel` with an exact version and integrity hash:
+Declare packages in `MODULE.bazel` with an exact version. An explicit integrity
+hash is supported and recommended when reviewing dependency updates:
 
 ```starlark
 typst_packages = use_extension(
@@ -48,10 +49,12 @@ package code trusted. Review packages and their transitive dependencies before
 adding them; they execute as part of Typst compilation inside the Bazel action
 sandbox.
 
-Typst's package format does not currently provide complete dependency metadata.
+Typst's official `typst.toml` schema does not contain package dependencies.
 Declare packages imported by another package alongside direct dependencies and
-add them to the target's `packages` list. Use exact versions in Typst imports;
-versionless imports require the remote registry index and are not hermetic.
+add them to the target's `packages` list. The extension parses manifests to
+verify package name, version, and entrypoint metadata, but it cannot infer these
+transitive imports. Use exact versions in Typst imports; versionless imports
+require the remote registry index and are not hermetic.
 
 To calculate an integrity value for a preview package:
 
@@ -62,6 +65,13 @@ curl -fsSL https://packages.typst.org/preview/cetz-0.3.4.tar.gz \
 ```
 
 Prefix the output with `sha256-`.
+
+For packages in the default `preview` namespace, `integrity` may be omitted.
+The extension downloads the immutable registry archive once, validates its
+`typst.toml`, and uses the resulting checksum for the generated repository. On
+Bazel 9 and newer, the checksum and parsed manifest metadata are retained in
+`MODULE.bazel.lock` through `module_ctx.facts`. Custom package URLs must always
+provide an explicit integrity value.
 
 See `examples/cetz_example.typ` for a CeTZ drawing and
 `examples/circuit_example.typ` for an electronic schematic built with

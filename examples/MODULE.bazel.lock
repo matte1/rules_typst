@@ -196,6 +196,28 @@
   },
   "selectedYankedVersions": {},
   "moduleExtensions": {
+    "@@pybind11_bazel+//:internal_configure.bzl%internal_configure_extension": {
+      "general": {
+        "bzlTransitiveDigest": "06cynZ1bCvvy8zHPrrDlXq+Z68xmjctHpfFxi+zEpJY=",
+        "usagesDigest": "D1r3lfzMuUBFxgG8V6o0bQTLMk3GkaGOaPzw53wrwyw=",
+        "recordedInputs": [
+          "REPO_MAPPING:pybind11_bazel+,bazel_tools bazel_tools",
+          "FILE:@@pybind11_bazel+//MODULE.bazel e6f4c20442eaa7c90d7190d8dc539d0ab422f95c65a57cc59562170c58ae3d34"
+        ],
+        "generatedRepoSpecs": {
+          "pybind11": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file": "@@pybind11_bazel+//:pybind11-BUILD.bazel",
+              "strip_prefix": "pybind11-2.12.0",
+              "urls": [
+                "https://github.com/pybind/pybind11/archive/v2.12.0.zip"
+              ]
+            }
+          }
+        }
+      }
+    },
     "@@rules_kotlin+//src/main/starlark/core/repositories:bzlmod_setup.bzl%rules_kotlin_extensions": {
       "general": {
         "bzlTransitiveDigest": "ABI1D/sbS1ovwaW/kHDoj8nnXjQ0oKU9fzmzEG4iT8o=",
@@ -450,7 +472,219 @@
           }
         }
       }
+    },
+    "@@rules_rust+//crate_universe/private:internal_extensions.bzl%cu_nr": {
+      "general": {
+        "bzlTransitiveDigest": "hCMnrWWWarWiuQ0BRxX0p+/bfsGNMEcLrQFHAqWQzuE=",
+        "usagesDigest": "v4We18mWSPeKV4GPp9Gne78W+jZOgP2pC1i4UN9br1g=",
+        "recordedInputs": [
+          "REPO_MAPPING:bazel_features+,bazel_features_globals bazel_features++version_extension+bazel_features_globals",
+          "REPO_MAPPING:bazel_features+,bazel_features_version bazel_features++version_extension+bazel_features_version",
+          "REPO_MAPPING:rules_cc+,bazel_skylib bazel_skylib+",
+          "REPO_MAPPING:rules_cc+,bazel_tools bazel_tools",
+          "REPO_MAPPING:rules_cc+,cc_compatibility_proxy rules_cc++compatibility_proxy+cc_compatibility_proxy",
+          "REPO_MAPPING:rules_cc+,platforms platforms",
+          "REPO_MAPPING:rules_cc+,rules_cc rules_cc+",
+          "REPO_MAPPING:rules_cc++compatibility_proxy+cc_compatibility_proxy,rules_cc rules_cc+",
+          "REPO_MAPPING:rules_rust+,bazel_features bazel_features+",
+          "REPO_MAPPING:rules_rust+,bazel_skylib bazel_skylib+",
+          "REPO_MAPPING:rules_rust+,bazel_tools bazel_tools",
+          "REPO_MAPPING:rules_rust+,cui rules_rust++cu+cui",
+          "REPO_MAPPING:rules_rust+,rrc rules_rust++i2+rrc",
+          "REPO_MAPPING:rules_rust+,rules_cc rules_cc+",
+          "REPO_MAPPING:rules_rust+,rules_rust rules_rust+"
+        ],
+        "generatedRepoSpecs": {
+          "cargo_bazel_bootstrap": {
+            "repoRuleId": "@@rules_rust+//cargo/private:cargo_bootstrap.bzl%cargo_bootstrap_repository",
+            "attributes": {
+              "srcs": [
+                "@@rules_rust+//crate_universe:src/api.rs",
+                "@@rules_rust+//crate_universe:src/api/lockfile.rs",
+                "@@rules_rust+//crate_universe:src/cli.rs",
+                "@@rules_rust+//crate_universe:src/cli/generate.rs",
+                "@@rules_rust+//crate_universe:src/cli/query.rs",
+                "@@rules_rust+//crate_universe:src/cli/render.rs",
+                "@@rules_rust+//crate_universe:src/cli/splice.rs",
+                "@@rules_rust+//crate_universe:src/cli/vendor.rs",
+                "@@rules_rust+//crate_universe:src/config.rs",
+                "@@rules_rust+//crate_universe:src/context.rs",
+                "@@rules_rust+//crate_universe:src/context/crate_context.rs",
+                "@@rules_rust+//crate_universe:src/context/platforms.rs",
+                "@@rules_rust+//crate_universe:src/lib.rs",
+                "@@rules_rust+//crate_universe:src/lockfile.rs",
+                "@@rules_rust+//crate_universe:src/main.rs",
+                "@@rules_rust+//crate_universe:src/metadata.rs",
+                "@@rules_rust+//crate_universe:src/metadata/cargo_bin.rs",
+                "@@rules_rust+//crate_universe:src/metadata/cargo_tree_resolver.rs",
+                "@@rules_rust+//crate_universe:src/metadata/cargo_tree_rustc_wrapper.bat",
+                "@@rules_rust+//crate_universe:src/metadata/cargo_tree_rustc_wrapper.sh",
+                "@@rules_rust+//crate_universe:src/metadata/dependency.rs",
+                "@@rules_rust+//crate_universe:src/metadata/metadata_annotation.rs",
+                "@@rules_rust+//crate_universe:src/rendering.rs",
+                "@@rules_rust+//crate_universe:src/rendering/template_engine.rs",
+                "@@rules_rust+//crate_universe:src/rendering/templates/module_bzl.j2",
+                "@@rules_rust+//crate_universe:src/rendering/templates/partials/header.j2",
+                "@@rules_rust+//crate_universe:src/rendering/templates/partials/module/aliases_map.j2",
+                "@@rules_rust+//crate_universe:src/rendering/templates/partials/module/deps_map.j2",
+                "@@rules_rust+//crate_universe:src/rendering/templates/partials/module/repo_git.j2",
+                "@@rules_rust+//crate_universe:src/rendering/templates/partials/module/repo_http.j2",
+                "@@rules_rust+//crate_universe:src/rendering/templates/vendor_module.j2",
+                "@@rules_rust+//crate_universe:src/rendering/verbatim/alias_rules.bzl",
+                "@@rules_rust+//crate_universe:src/select.rs",
+                "@@rules_rust+//crate_universe:src/splicing.rs",
+                "@@rules_rust+//crate_universe:src/splicing/cargo_config.rs",
+                "@@rules_rust+//crate_universe:src/splicing/crate_index_lookup.rs",
+                "@@rules_rust+//crate_universe:src/splicing/splicer.rs",
+                "@@rules_rust+//crate_universe:src/test.rs",
+                "@@rules_rust+//crate_universe:src/utils.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/glob.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/label.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/select.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/select_dict.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/select_list.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/select_scalar.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/select_set.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/serialize.rs",
+                "@@rules_rust+//crate_universe:src/utils/starlark/target_compatible_with.rs",
+                "@@rules_rust+//crate_universe:src/utils/symlink.rs",
+                "@@rules_rust+//crate_universe:src/utils/target_triple.rs"
+              ],
+              "binary": "cargo-bazel",
+              "cargo_lockfile": "@@rules_rust+//crate_universe:Cargo.lock",
+              "cargo_toml": "@@rules_rust+//crate_universe:Cargo.toml",
+              "version": "1.86.0",
+              "timeout": 900,
+              "rust_toolchain_cargo_template": "@rust_host_tools//:bin/{tool}",
+              "rust_toolchain_rustc_template": "@rust_host_tools//:bin/{tool}",
+              "compressed_windows_toolchain_names": false
+            }
+          }
+        },
+        "moduleExtensionMetadata": {
+          "explicitRootModuleDirectDeps": [
+            "cargo_bazel_bootstrap"
+          ],
+          "explicitRootModuleDirectDevDeps": [],
+          "useAllRepos": "NO",
+          "reproducible": false
+        }
+      }
+    },
+    "@@rules_typst+//typst:extensions.bzl%typst_packages": {
+      "general": {
+        "bzlTransitiveDigest": "AkLRF84V/iK0f8UDVQS/fYBOQYuSLmjjno6FJRZRWA0=",
+        "usagesDigest": "eJbkuvboTSRCTPlaiPXQe0tvA9Gnnz7Lsl0kwTP+dIY=",
+        "recordedInputs": [
+          "REPO_MAPPING:rules_typst+,bazel_tools bazel_tools"
+        ],
+        "generatedRepoSpecs": {
+          "typst_package_preview_a2c_nums_0_0_1": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "load(\"@rules_typst//typst:typst_package.bzl\", \"typst_package\")\n\npackage(default_visibility = [\"//visibility:public\"])\n\ntypst_package(\n    name = \"package\",\n    namespace = \"preview\",\n    package_name = \"a2c-nums\",\n    srcs = glob(\n        [\"**\"],\n        exclude = [\n            \"BUILD\",\n            \"BUILD.bazel\",\n            \"MODULE.bazel\",\n            \"REPO\",\n            \"REPO.bazel\",\n            \"WORKSPACE\",\n            \"WORKSPACE.bazel\",\n        ],\n    ),\n    version = \"0.0.1\",\n)\n",
+              "canonical_id": "rules_typst:@preview/a2c-nums:0.0.1",
+              "integrity": "sha256-nrBYr7gZfxYldHKz0gZ1o5XjCX301rHIEO3s4exSOhw=",
+              "urls": [
+                "https://packages.typst.org/preview/a2c-nums-0.0.1.tar.gz"
+              ]
+            }
+          },
+          "typst_package_preview_cetz_0_5_2": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "load(\"@rules_typst//typst:typst_package.bzl\", \"typst_package\")\n\npackage(default_visibility = [\"//visibility:public\"])\n\ntypst_package(\n    name = \"package\",\n    namespace = \"preview\",\n    package_name = \"cetz\",\n    srcs = glob(\n        [\"**\"],\n        exclude = [\n            \"BUILD\",\n            \"BUILD.bazel\",\n            \"MODULE.bazel\",\n            \"REPO\",\n            \"REPO.bazel\",\n            \"WORKSPACE\",\n            \"WORKSPACE.bazel\",\n        ],\n    ),\n    version = \"0.5.2\",\n)\n",
+              "canonical_id": "rules_typst:@preview/cetz:0.5.2",
+              "integrity": "sha256-d8+EkBFK4ExuZloR76aR0oSgytuXGXcbVwjBGXKS8j8=",
+              "urls": [
+                "https://packages.typst.org/preview/cetz-0.5.2.tar.gz"
+              ]
+            }
+          },
+          "typst_package_preview_oxifmt_1_0_0": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "load(\"@rules_typst//typst:typst_package.bzl\", \"typst_package\")\n\npackage(default_visibility = [\"//visibility:public\"])\n\ntypst_package(\n    name = \"package\",\n    namespace = \"preview\",\n    package_name = \"oxifmt\",\n    srcs = glob(\n        [\"**\"],\n        exclude = [\n            \"BUILD\",\n            \"BUILD.bazel\",\n            \"MODULE.bazel\",\n            \"REPO\",\n            \"REPO.bazel\",\n            \"WORKSPACE\",\n            \"WORKSPACE.bazel\",\n        ],\n    ),\n    version = \"1.0.0\",\n)\n",
+              "canonical_id": "rules_typst:@preview/oxifmt:1.0.0",
+              "integrity": "sha256-fReh/IrQF0DsPLKwPHNgpCJf+TGOVxB2X6mOpv1ZWU8=",
+              "urls": [
+                "https://packages.typst.org/preview/oxifmt-1.0.0.tar.gz"
+              ]
+            }
+          },
+          "typst_package_preview_zap_0_6_0": {
+            "repoRuleId": "@@bazel_tools//tools/build_defs/repo:http.bzl%http_archive",
+            "attributes": {
+              "build_file_content": "load(\"@rules_typst//typst:typst_package.bzl\", \"typst_package\")\n\npackage(default_visibility = [\"//visibility:public\"])\n\ntypst_package(\n    name = \"package\",\n    namespace = \"preview\",\n    package_name = \"zap\",\n    srcs = glob(\n        [\"**\"],\n        exclude = [\n            \"BUILD\",\n            \"BUILD.bazel\",\n            \"MODULE.bazel\",\n            \"REPO\",\n            \"REPO.bazel\",\n            \"WORKSPACE\",\n            \"WORKSPACE.bazel\",\n        ],\n    ),\n    version = \"0.6.0\",\n)\n",
+              "canonical_id": "rules_typst:@preview/zap:0.6.0",
+              "integrity": "sha256-Lq30CKTE7wdk45okSF5LhNkXuZTbf6UbEI71nwWsApk=",
+              "urls": [
+                "https://packages.typst.org/preview/zap-0.6.0.tar.gz"
+              ]
+            }
+          },
+          "typst_packages": {
+            "repoRuleId": "@@rules_typst+//typst:extensions.bzl%typst_packages_hub",
+            "attributes": {
+              "packages": {
+                "@@rules_typst++typst_packages+typst_package_preview_a2c_nums_0_0_1//:package": "preview_a2c_nums_0_0_1",
+                "@@rules_typst++typst_packages+typst_package_preview_cetz_0_5_2//:package": "preview_cetz_0_5_2",
+                "@@rules_typst++typst_packages+typst_package_preview_oxifmt_1_0_0//:package": "preview_oxifmt_1_0_0",
+                "@@rules_typst++typst_packages+typst_package_preview_zap_0_6_0//:package": "preview_zap_0_6_0"
+              }
+            }
+          }
+        },
+        "moduleExtensionMetadata": {
+          "useAllRepos": "NO",
+          "reproducible": false
+        }
+      }
     }
   },
-  "facts": {}
+  "facts": {
+    "@@rules_typst+//typst:extensions.bzl%typst_packages": {
+      "rules_typst": {
+        "packages": {
+          "https://packages.typst.org/preview/a2c-nums-0.0.1.tar.gz": {
+            "integrity": "sha256-nrBYr7gZfxYldHKz0gZ1o5XjCX301rHIEO3s4exSOhw=",
+            "manifest": {
+              "compiler": "0.10.0",
+              "entrypoint": "src/lib.typ",
+              "name": "a2c-nums",
+              "version": "0.0.1"
+            }
+          },
+          "https://packages.typst.org/preview/cetz-0.5.2.tar.gz": {
+            "integrity": "sha256-d8+EkBFK4ExuZloR76aR0oSgytuXGXcbVwjBGXKS8j8=",
+            "manifest": {
+              "compiler": "0.14.0",
+              "entrypoint": "src/lib.typ",
+              "name": "cetz",
+              "version": "0.5.2"
+            }
+          },
+          "https://packages.typst.org/preview/oxifmt-1.0.0.tar.gz": {
+            "integrity": "sha256-fReh/IrQF0DsPLKwPHNgpCJf+TGOVxB2X6mOpv1ZWU8=",
+            "manifest": {
+              "entrypoint": "lib.typ",
+              "name": "oxifmt",
+              "version": "1.0.0"
+            }
+          },
+          "https://packages.typst.org/preview/zap-0.6.0.tar.gz": {
+            "integrity": "sha256-Lq30CKTE7wdk45okSF5LhNkXuZTbf6UbEI71nwWsApk=",
+            "manifest": {
+              "compiler": "0.14.0",
+              "entrypoint": "src/lib.typ",
+              "name": "zap",
+              "version": "0.6.0"
+            }
+          }
+        },
+        "schema": 1
+      }
+    }
+  }
 }

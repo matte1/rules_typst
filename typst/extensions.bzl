@@ -2,7 +2,11 @@
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 load("@bazel_tools//tools/build_defs/repo:utils.bzl", "maybe")
+load("//typst/private:manifest.bzl", "parse_typst_manifest")
 load("//typst/private:versions.bzl", "TYPST_VERSIONS")
+
+_FACTS_KEY = "rules_typst"
+_FACTS_SCHEMA = 1
 
 _HUB_BUILD_CONTENT = """\
 {toolchains}
@@ -249,31 +253,135 @@ def _validate_package_version(version, spec):
             if part[index] not in "0123456789":
                 fail("version must use major.minor.patch for Typst package {}".format(repr(spec)))
 
+def _stored_package_facts(module_ctx):
+    if not hasattr(module_ctx, "facts"):
+        return {}
+
+    stored = module_ctx.facts.get(_FACTS_KEY, {})
+    if type(stored) != "dict" or stored.get("schema") != _FACTS_SCHEMA:
+        return {}
+
+    packages = stored.get("packages", {})
+    if type(packages) != "dict":
+        return {}
+
+    return dict(packages)
+
+def _valid_package_fact(fact):
+    if type(fact) != "dict" or type(fact.get("integrity")) != "string":
+        return False
+
+    manifest = fact.get("manifest")
+    if type(manifest) != "dict":
+        return False
+
+    for field in ["name", "version", "entrypoint"]:
+        if type(manifest.get(field)) != "string" or not manifest[field]:
+            return False
+
+    return True
+
+def _validate_manifest(manifest, package):
+    if manifest["name"] != package.name:
+        fail("Typst package {} contains manifest name {}".format(
+            repr(package.spec),
+            repr(manifest["name"]),
+        ))
+    if manifest["version"] != package.version:
+        fail("Typst package {} contains manifest version {}".format(
+            repr(package.spec),
+            repr(manifest["version"]),
+        ))
+
+def _resolve_package(module_ctx, package, stored_package_facts):
+    fact_key = package.urls[0] if package.is_registry else ""
+    fact = stored_package_facts.get(fact_key) if fact_key else None
+
+    if _valid_package_fact(fact):
+        if package.integrity and package.integrity != fact["integrity"]:
+            fail("Integrity for Typst package {} conflicts with the stored registry fact".format(
+                repr(package.spec),
+            ))
+        _validate_manifest(fact["manifest"], package)
+        return struct(
+            discovered_integrity = False,
+            integrity = fact["integrity"],
+            manifest = fact["manifest"],
+        )
+
+    if not package.integrity and not package.is_registry:
+        fail("integrity must be set for Typst package {} with custom urls".format(
+            repr(package.spec),
+        ))
+
+    output = "package_manifests/{}".format(package.normalized_name)
+    download = module_ctx.download_and_extract(
+        url = package.urls,
+        output = output,
+        canonical_id = "rules_typst:{}".format(package.spec),
+        integrity = package.integrity,
+    )
+    manifest = parse_typst_manifest(module_ctx.read("{}/typst.toml".format(output)))
+    _validate_manifest(manifest, package)
+
+    return struct(
+        discovered_integrity = not package.integrity,
+        integrity = download.integrity,
+        manifest = manifest,
+    )
+
 def _typst_packages_impl(module_ctx):
     package_specs = {}
     repository_specs = {}
     packages = {}
+    stored_package_facts = _stored_package_facts(module_ctx)
+    package_facts = {}
+    discovered_integrity = False
 
     for module in module_ctx.modules:
-        for package in module.tags.package:
-            spec = "@{}/{}:{}".format(package.namespace, package.name, package.version)
-            _validate_package_identifier("namespace", package.namespace, spec)
-            _validate_package_identifier("name", package.name, spec)
-            _validate_package_version(package.version, spec)
-            if not package.integrity:
-                fail("integrity must not be empty for Typst package {}".format(repr(spec)))
-            definition = (package.integrity, package.urls)
-            if spec in package_specs:
-                if package_specs[spec] != definition:
-                    fail("Conflicting definitions for Typst package {}".format(repr(spec)))
-                continue
-            package_specs[spec] = definition
+        for tag in module.tags.package:
+            spec = "@{}/{}:{}".format(tag.namespace, tag.name, tag.version)
+            _validate_package_identifier("namespace", tag.namespace, spec)
+            _validate_package_identifier("name", tag.name, spec)
+            _validate_package_version(tag.version, spec)
+
+            is_registry = not tag.urls
+            urls = tag.urls
+            if is_registry:
+                if tag.namespace != "preview":
+                    fail("urls must be set for non-preview Typst package {}".format(repr(spec)))
+                urls = ["https://packages.typst.org/preview/{}-{}.tar.gz".format(
+                    tag.name,
+                    tag.version,
+                )]
 
             normalized_name = _normalize_name("{}_{}_{}".format(
-                package.namespace,
-                package.name,
-                package.version,
+                tag.namespace,
+                tag.name,
+                tag.version,
             ))
+            package = struct(
+                integrity = tag.integrity,
+                is_registry = is_registry,
+                name = tag.name,
+                namespace = tag.namespace,
+                normalized_name = normalized_name,
+                spec = spec,
+                urls = urls,
+                version = tag.version,
+            )
+
+            if spec in package_specs:
+                existing = package_specs[spec]
+                if existing.urls != package.urls or (
+                    existing.integrity and package.integrity and existing.integrity != package.integrity
+                ):
+                    fail("Conflicting definitions for Typst package {}".format(repr(spec)))
+                if not existing.integrity and package.integrity:
+                    package_specs[spec] = package
+                continue
+            package_specs[spec] = package
+
             repository_name = "typst_package_{}".format(normalized_name)
             if repository_name in repository_specs and repository_specs[repository_name] != spec:
                 fail("Typst packages {} and {} produce the same Bazel name".format(
@@ -281,37 +389,50 @@ def _typst_packages_impl(module_ctx):
                     repr(spec),
                 ))
             repository_specs[repository_name] = spec
-            urls = package.urls
-            if not urls:
-                if package.namespace != "preview":
-                    fail("urls must be set for non-preview Typst package {}".format(repr(spec)))
-                urls = ["https://packages.typst.org/preview/{}-{}.tar.gz".format(
-                    package.name,
-                    package.version,
-                )]
 
-            http_archive(
-                name = repository_name,
-                build_file_content = _PACKAGE_BUILD_CONTENT.format(
-                    namespace = repr(package.namespace),
-                    package_name = repr(package.name),
-                    version = repr(package.version),
-                ),
-                integrity = package.integrity,
-                urls = urls,
-            )
-            packages["@{}//:package".format(repository_name)] = normalized_name
+    for spec in sorted(package_specs.keys()):
+        package = package_specs[spec]
+        resolved = _resolve_package(module_ctx, package, stored_package_facts)
+        discovered_integrity = discovered_integrity or resolved.discovered_integrity
+        repository_name = "typst_package_{}".format(package.normalized_name)
+
+        if package.is_registry:
+            package_facts[package.urls[0]] = {
+                "integrity": resolved.integrity,
+                "manifest": resolved.manifest,
+            }
+
+        http_archive(
+            name = repository_name,
+            build_file_content = _PACKAGE_BUILD_CONTENT.format(
+                namespace = repr(package.namespace),
+                package_name = repr(package.name),
+                version = repr(package.version),
+            ),
+            canonical_id = "rules_typst:{}".format(spec),
+            integrity = resolved.integrity,
+            urls = package.urls,
+        )
+        packages["@{}//:package".format(repository_name)] = package.normalized_name
 
     typst_packages_hub(
         name = "typst_packages",
         packages = packages,
     )
 
-    return module_ctx.extension_metadata(reproducible = True)
+    if hasattr(module_ctx, "facts"):
+        return module_ctx.extension_metadata(facts = {
+            _FACTS_KEY: {
+                "packages": package_facts,
+                "schema": _FACTS_SCHEMA,
+            },
+        })
+
+    return module_ctx.extension_metadata(reproducible = not discovered_integrity)
 
 _typst_package = tag_class(
     attrs = {
-        "integrity": attr.string(mandatory = True),
+        "integrity": attr.string(),
         "name": attr.string(mandatory = True),
         "namespace": attr.string(default = "preview"),
         "urls": attr.string_list(),
