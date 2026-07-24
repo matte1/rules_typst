@@ -45,6 +45,31 @@ typst(
     ],
 )
 
+typst(
+    name = "package_example",
+    src = "package_example.typ",
+    packages = ["@typst_packages//:preview_a2c_nums_0_0_1"],
+)
+
+typst(
+    name = "cetz_example",
+    src = "cetz_example.typ",
+    packages = [
+        "@typst_packages//:preview_cetz_0_5_2",
+        "@typst_packages//:preview_oxifmt_1_0_0",
+    ],
+)
+
+typst(
+    name = "circuit_example",
+    src = "circuit_example.typ",
+    packages = [
+        "@typst_packages//:preview_cetz_0_5_2",
+        "@typst_packages//:preview_oxifmt_1_0_0",
+        "@typst_packages//:preview_zap_0_6_0",
+    ],
+)
+
 write_source_file(
     name = "write_example_pdf",
     diff_test = True,
@@ -52,7 +77,33 @@ write_source_file(
     out_file = "generated/source_sync/example.pdf",
 )
 
+write_source_file(
+    name = "write_package_example_pdf",
+    diff_test = True,
+    in_file = ":package_example",
+    out_file = "generated/source_sync/package_example.pdf",
+)
+
+write_source_file(
+    name = "write_cetz_example_pdf",
+    diff_test = True,
+    in_file = ":cetz_example",
+    out_file = "generated/source_sync/cetz_example.pdf",
+)
+
+write_source_file(
+    name = "write_circuit_example_pdf",
+    diff_test = True,
+    in_file = ":circuit_example",
+    out_file = "generated/source_sync/circuit_example.pdf",
+)
+
 build_test(
     name = "example_build_test",
-    targets = [":example"],
+    targets = [
+        ":cetz_example",
+        ":circuit_example",
+        ":example",
+        ":package_example",
+    ],
 )

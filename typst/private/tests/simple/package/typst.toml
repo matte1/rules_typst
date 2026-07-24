@@ -1,0 +1,4 @@
+[package]
+name = "example"
+version = "1.0.0"
+entrypoint = "src/lib.typ"
