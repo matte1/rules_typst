@@ -2,6 +2,19 @@ load("@bazel_skylib//rules:build_test.bzl", "build_test")
 load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
 load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
 load("//typst:typst.bzl", "typst")
+load("//typst:typst_package.bzl", "typst_package")
+
+typst_package(
+    name = "test_package",
+    package_name = "example",
+    srcs = [
+        "package/src/lib.typ",
+        "package/typst.toml",
+    ],
+    namespace = "test",
+    strip_prefix = "package",
+    version = "1.0.0",
+)
 
 filegroup(
     name = "smile",
@@ -21,6 +34,7 @@ typst(
         ":frown",
         ":smile",
     ],
+    packages = [":test_package"],
     visibility = ["//typst/private/tests:__pkg__"],
 )
 
@@ -40,6 +54,7 @@ typst(
         ":frown",
         ":smile",
     ],
+    packages = [":test_package"],
 )
 
 typst(
@@ -49,6 +64,7 @@ typst(
         ":frown",
         ":smile",
     ],
+    packages = [":test_package"],
 )
 
 diff_test(

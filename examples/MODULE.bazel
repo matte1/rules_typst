@@ -14,3 +14,26 @@ local_path_override(
     module_name = "rules_typst",
     path = "..",
 )
+
+typst_packages = use_extension(
+    "@rules_typst//typst:extensions.bzl",
+    "typst_packages",
+)
+typst_packages.package(
+    name = "a2c-nums",
+    integrity = "sha256-nrBYr7gZfxYldHKz0gZ1o5XjCX301rHIEO3s4exSOhw=",
+    version = "0.0.1",
+)
+typst_packages.package(
+    name = "cetz",
+    version = "0.5.2",
+)
+typst_packages.package(
+    name = "oxifmt",
+    version = "1.0.0",
+)
+typst_packages.package(
+    name = "zap",
+    version = "0.6.0",
+)
+use_repo(typst_packages, "typst_packages")
