@@ -1,6 +1,7 @@
 """A script for fetching all available versions of Typst."""
 
 import argparse
+import ast
 import base64
 import binascii
 import hashlib
@@ -126,7 +127,28 @@ def compute_integrity_from_url(url: str) -> str | None:
         return None
 
 
-def query_releases() -> dict[str, dict[str, dict[str, str]]]:
+def recorded_integrity(path: Path) -> dict[str, str]:
+    """Read integrity values already written to `path`, keyed by download url.
+
+    Releases published before GitHub exposed asset digests would otherwise have
+    to be downloaded again on every run.
+    """
+    if not path.exists():
+        return {}
+
+    match = re.search(r"TYPST_VERSIONS = (\{.*\})", path.read_text(), re.DOTALL)
+    if not match:
+        return {}
+
+    return {
+        url: data["integrity"]
+        for platforms in ast.literal_eval(match.group(1)).values()
+        for data in platforms.values()
+        for url in data["urls"]
+    }
+
+
+def query_releases(known: dict[str, str]) -> dict[str, dict[str, dict[str, str]]]:
     """Fetch Typst releases and return version -> platform -> {urls, integrity}."""
     page = 1
     releases_data: dict[str, dict[str, dict[str, str]]] = {}
@@ -164,6 +186,8 @@ def query_releases() -> dict[str, dict[str, dict[str, str]]]:
                         integrity_val = (
                             _integrity_from_digest(digest) if digest else None
                         )
+                        if integrity_val is None:
+                            integrity_val = known.get(url_str)
                         if integrity_val is None:
                             logging.info("Computing integrity for %s %s", version, name)
                             integrity_val = compute_integrity_from_url(url_str)
@@ -217,10 +241,14 @@ def main() -> None:
     else:
         logging.basicConfig(level=logging.INFO)
 
-    releases = query_releases()
+    releases = query_releases(recorded_integrity(args.output))
 
     logging.debug("Writing to %s", args.output)
-    args.output.write_text(BUILD_TEMPLATE.format(json.dumps(releases, indent=4)))
+    # Sorted so a new release shows up as an addition rather than reordering
+    # the whole file.
+    args.output.write_text(
+        BUILD_TEMPLATE.format(json.dumps(releases, indent=4, sort_keys=True))
+    )
     logging.info("Done")
 
 
