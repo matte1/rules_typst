@@ -434,6 +434,106 @@ TYPST_VERSIONS = {
             ],
         },
     },
+    "0.15.0": {
+        "aarch64-apple-darwin": {
+            "integrity": "sha256-/lODhzer+Tp3RJWVKhp5e0aG6cSiHC2Zuf33f0bMNXI=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-aarch64-apple-darwin.tar.xz",
+            ],
+        },
+        "aarch64-pc-windows-msvc": {
+            "integrity": "sha256-YIUITbPjqgJcPI38Gt8cdY4v69COV0GC+kGJrXkSQpM=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-aarch64-pc-windows-msvc.zip",
+            ],
+        },
+        "aarch64-unknown-linux-musl": {
+            "integrity": "sha256-zfUP/HuLp1ntAiAGMu2j1464uZqstmEfT3VoSZBkdiA=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-aarch64-unknown-linux-musl.tar.xz",
+            ],
+        },
+        "armv7-unknown-linux-musleabi": {
+            "integrity": "sha256-5DKQbnZjoXXnKfpYvuqZyuFxqVNKw3xq+jha6GGsOMY=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-armv7-unknown-linux-musleabi.tar.xz",
+            ],
+        },
+        "riscv64gc-unknown-linux-gnu": {
+            "integrity": "sha256-p/++12CrDOKywMbwrHQnOC7UGAC4etjV9r3NxyWD9kc=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-riscv64gc-unknown-linux-gnu.tar.xz",
+            ],
+        },
+        "x86_64-apple-darwin": {
+            "integrity": "sha256-MCEMfFOceVTblMBjzZi0P9CgytKF1lbbvOKkCu4ueb4=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-x86_64-apple-darwin.tar.xz",
+            ],
+        },
+        "x86_64-pc-windows-msvc": {
+            "integrity": "sha256-Zq5/CQe0ua/tXH1subIeB/Dzw9Tik7o+ACalTYggL+k=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-x86_64-pc-windows-msvc.zip",
+            ],
+        },
+        "x86_64-unknown-linux-musl": {
+            "integrity": "sha256-WbIH3wG+LaufE+gPc9BNf/gnP/1Gs90bnu9cYPPuq+o=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.0/typst-x86_64-unknown-linux-musl.tar.xz",
+            ],
+        },
+    },
+    "0.15.1": {
+        "aarch64-apple-darwin": {
+            "integrity": "sha256-SPYu0DSqOnl4MJV5rGygAEXi7w2nMRToryfP2OdNwFo=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-aarch64-apple-darwin.tar.xz",
+            ],
+        },
+        "aarch64-pc-windows-msvc": {
+            "integrity": "sha256-SrKOG3HsMYTTjVgKt5f0mbZ3DZUraxkWe+XOpcJmLhQ=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-aarch64-pc-windows-msvc.zip",
+            ],
+        },
+        "aarch64-unknown-linux-musl": {
+            "integrity": "sha256-WqjXSj2QbmDqEqZqwvN/ju8bFMutcYKnReOToQwj3O4=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-aarch64-unknown-linux-musl.tar.xz",
+            ],
+        },
+        "armv7-unknown-linux-musleabi": {
+            "integrity": "sha256-RJhjEuVXuawPLHHV1RVsCtk7LaN01UyFnWwMfAtzcJ8=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-armv7-unknown-linux-musleabi.tar.xz",
+            ],
+        },
+        "riscv64gc-unknown-linux-gnu": {
+            "integrity": "sha256-7HNfcyxqmUDE7wgiO1BAQ5ZTetNHE+uIPvO7MQs5blo=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-riscv64gc-unknown-linux-gnu.tar.xz",
+            ],
+        },
+        "x86_64-apple-darwin": {
+            "integrity": "sha256-f5/dlYSGYkXemnngrdj5I2+ub0CopF4sR3HMwU204Po=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-apple-darwin.tar.xz",
+            ],
+        },
+        "x86_64-pc-windows-msvc": {
+            "integrity": "sha256-Gc41URU8L+fun6L5UggxDI9NMgn+22meAzP6+JE/ZzY=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-pc-windows-msvc.zip",
+            ],
+        },
+        "x86_64-unknown-linux-musl": {
+            "integrity": "sha256-ptB30Kle7VouunFbLa4GvpVPYkzL+FdYoD84ne0zEYw=",
+            "urls": [
+                "https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-unknown-linux-musl.tar.xz",
+            ],
+        },
+    },
     "0.2.0": {
         "x86_64-pc-windows-msvc": {
             "integrity": "sha256-XDXEc79kbZ2BH5eDfKG7dOr6B67jsB5ZD56aWD2FC0M=",

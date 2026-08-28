@@ -6,7 +6,7 @@ load("//typst/private:versions.bzl", "TYPST_VERSIONS")
 
 string_flag(
     name = "version",
-    build_setting_default = "0.14.2",
+    build_setting_default = "0.15.1",
     values = TYPST_VERSIONS.keys(),
     visibility = ["//visibility:public"],
 )
