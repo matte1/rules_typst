@@ -17,7 +17,8 @@ PDF bytes on every machine:
 Fonts are the usual source of "works on my machine": a document that renders
 with a system font produces a different glyph subset — and therefore different
 bytes — wherever that font's build differs. Typst reports an unknown font family
-as a warning and silently falls back to a default.
+as a warning and silently falls back to a default, so check the build log if the
+output is not what you expect.
 
 Hermetic font handling requires Typst 0.12 or newer, when
 `--ignore-system-fonts` was added.

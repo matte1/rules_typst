@@ -139,6 +139,12 @@ fn main() {
                 print!("{}", String::from_utf8_lossy(&output.stdout));
             }
 
+            // Diagnostics such as `unknown font family` are reported on a
+            // successful compile and would otherwise be lost.
+            if !output.stderr.is_empty() {
+                eprint!("{}", String::from_utf8_lossy(&output.stderr));
+            }
+
             cleanup(&temp_dirs);
         }
         Err(e) => {
