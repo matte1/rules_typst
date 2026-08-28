@@ -2,7 +2,7 @@
 
 use std::collections::BTreeMap;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 /// Command line args for the process wrapper.
@@ -57,10 +57,12 @@ impl Args {
     }
 }
 
-fn cleanup(temp_runfiles_dir: &PathBuf) {
-    if temp_runfiles_dir.exists() {
-        fs::remove_dir_all(temp_runfiles_dir)
-            .unwrap_or_else(|e| eprintln!("Warning: failed to clean up temp dir: {}", e));
+fn cleanup(temp_dirs: &[&Path]) {
+    for dir in temp_dirs {
+        if dir.exists() {
+            fs::remove_dir_all(dir)
+                .unwrap_or_else(|e| eprintln!("Warning: failed to clean up temp dir: {}", e));
+        }
     }
 }
 
@@ -69,8 +71,14 @@ fn main() {
 
     let temp_runfiles_dir = PathBuf::from(format!("{}.runfiles", args.out.display()));
 
-    // Create the temp runfiles directory
-    fs::create_dir_all(&temp_runfiles_dir).expect("Failed to create temp runfiles directory");
+    // Packages resolve inside the action, and outside the document root so
+    // they cannot be referenced as document sources.
+    let package_dir = PathBuf::from(format!("{}.packages", args.out.display()));
+    let temp_dirs = [temp_runfiles_dir.as_path(), package_dir.as_path()];
+
+    for dir in temp_dirs {
+        fs::create_dir_all(dir).expect("Failed to create temp directory");
+    }
 
     // Copy the source file into the build directory at its rlocation path
     let abs_src = temp_runfiles_dir.join(&args.src.1);
@@ -98,13 +106,18 @@ fn main() {
             .expect("src rlocationpath must have a workspace name component"),
     );
 
-    // Run the typst compiler. Host fonts are excluded so output does not
-    // depend on which font packages the machine has installed.
+    // Run the typst compiler. Host fonts and the user's package directories
+    // are excluded so output does not depend on what the machine has
+    // installed or previously downloaded.
     let result = Command::new(&args.compiler)
         .arg("compile")
         .arg("--root")
         .arg(&workspace_root)
         .arg("--ignore-system-fonts")
+        .arg("--package-path")
+        .arg(&package_dir)
+        .arg("--package-cache-path")
+        .arg(&package_dir)
         .arg(&abs_src)
         .arg(&args.out)
         .output();
@@ -118,7 +131,7 @@ fn main() {
                     String::from_utf8_lossy(&output.stdout),
                     String::from_utf8_lossy(&output.stderr),
                 );
-                cleanup(&temp_runfiles_dir);
+                cleanup(&temp_dirs);
                 std::process::exit(1);
             }
 
@@ -126,11 +139,11 @@ fn main() {
                 print!("{}", String::from_utf8_lossy(&output.stdout));
             }
 
-            cleanup(&temp_runfiles_dir);
+            cleanup(&temp_dirs);
         }
         Err(e) => {
             eprintln!("Failed to run typst compiler: {}", e);
-            cleanup(&temp_runfiles_dir);
+            cleanup(&temp_dirs);
             std::process::exit(1);
         }
     }

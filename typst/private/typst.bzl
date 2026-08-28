@@ -54,8 +54,8 @@ def _typst_impl(ctx):
 typst = rule(
     doc = "Compile a Typst document to PDF.\n\n" +
           "Compilation sees only the declared sources and the fonts embedded in " +
-          "the pinned compiler. Fonts installed on the host are ignored so the " +
-          "same inputs produce the same bytes on every machine.",
+          "the pinned compiler. Fonts and packages installed on the host are " +
+          "ignored so the same inputs produce the same bytes on every machine.",
     implementation = _typst_impl,
     attrs = {
         "data": attr.label_list(

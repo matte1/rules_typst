@@ -11,6 +11,8 @@ PDF bytes on every machine:
   through the `env` attribute to opt out.
 - Fonts installed on the host are ignored. Only the fonts embedded in the pinned
   compiler are available.
+- The package path and package cache point inside the action, so a `@preview`
+  import cannot resolve against a developer's `~/.cache/typst`.
 
 Fonts are the usual source of "works on my machine": a document that renders
 with a system font produces a different glyph subset — and therefore different
