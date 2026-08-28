@@ -108,9 +108,13 @@ fn main() {
 
     // Run the typst compiler. Host fonts and the user's package directories
     // are excluded so output does not depend on what the machine has
-    // installed or previously downloaded.
+    // installed or previously downloaded. Typst otherwise spawns a thread per
+    // CPU, which oversubscribes the machine when Bazel runs several actions at
+    // once.
     let result = Command::new(&args.compiler)
         .arg("compile")
+        .arg("--jobs")
+        .arg("1")
         .arg("--root")
         .arg(&workspace_root)
         .arg("--ignore-system-fonts")
