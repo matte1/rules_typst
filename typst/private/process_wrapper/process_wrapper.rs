@@ -98,11 +98,13 @@ fn main() {
             .expect("src rlocationpath must have a workspace name component"),
     );
 
-    // Run the typst compiler
+    // Run the typst compiler. Host fonts are excluded so output does not
+    // depend on which font packages the machine has installed.
     let result = Command::new(&args.compiler)
         .arg("compile")
         .arg("--root")
         .arg(&workspace_root)
+        .arg("--ignore-system-fonts")
         .arg(&abs_src)
         .arg(&args.out)
         .output();
