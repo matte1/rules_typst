@@ -47,6 +47,9 @@ typst(
 
 write_source_file(
     name = "write_example_pdf",
+    # A PDF is binary, so report only whether it changed rather than dumping
+    # xref tables and font streams into the test log.
+    diff_args = ["--brief"],
     diff_test = True,
     in_file = ":example",
     out_file = "generated/source_sync/example.pdf",

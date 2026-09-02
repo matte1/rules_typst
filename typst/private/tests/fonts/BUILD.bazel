@@ -1,0 +1,24 @@
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+load("//typst:typst.bzl", "typst")
+
+# A document asking for font families that Typst does not embed. The families
+# are common on developer and CI machines, so if host fonts were searched this
+# would render with one of them instead of falling back.
+typst(
+    name = "host_fonts",
+    src = "host_fonts.typ",
+)
+
+typst(
+    name = "embedded_fonts",
+    src = "embedded_fonts.typ",
+)
+
+# Both documents must fall back to the same embedded font. A failure here means
+# a host font leaked into the output, which makes the PDF differ between
+# machines depending on which font packages are installed.
+diff_test(
+    name = "host_fonts_ignored_test",
+    file1 = ":host_fonts",
+    file2 = ":embedded_fonts",
+)
